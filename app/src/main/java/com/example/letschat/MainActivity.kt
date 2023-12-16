@@ -9,9 +9,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.letschat.Screens.ChatScreen
 
 import com.example.letschat.Screens.LoginScreen
 import com.example.letschat.Screens.SignupScreen
@@ -57,12 +59,15 @@ fun ChatAppnavigation() {
     var vm = hiltViewModel<LCViewModel>()
     NavHost(navController = navController, startDestination = DestinationScreen.Signup.route) {
         composable(DestinationScreen.Signup.route) {
-            SignupScreen(navController, vm)
+            SignupScreen(navController, vm = vm)
         }
 
-            composable(DestinationScreen.Login.route) {
-                LoginScreen()
-            }
+          composable(DestinationScreen.Login.route) {
+            LoginScreen(navController,vm)
+          }
+        composable(DestinationScreen.Chatlist.route) {
+            ChatScreen()
+        }
         }
 
     }

@@ -2,23 +2,18 @@ package com.example.letschat.Screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +28,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.letschat.CheckSignedIn
+
 import com.example.letschat.CommonProgress
 import com.example.letschat.DestinationScreen
 import com.example.letschat.LCViewModel
@@ -43,6 +40,9 @@ import com.example.letschat.navigateto
 @Composable
 fun SignupScreen(navcontroller:NavController,vm:LCViewModel) {
 
+    CheckSignedIn(vm = vm, navcontroller)
+
+    //navcontroller = Navcontroller ..error
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -70,7 +70,7 @@ fun SignupScreen(navcontroller:NavController,vm:LCViewModel) {
             val passnamestate = remember {
                 mutableStateOf(TextFieldValue())
             }
-          val Focus = LocalFocusManager.current
+            val Focus = LocalFocusManager.current
 
 
             Image(
@@ -90,7 +90,7 @@ fun SignupScreen(navcontroller:NavController,vm:LCViewModel) {
                 modifier = Modifier.padding(bottom = 30.dp),
 
 
-            )
+                )
             OutlinedTextField(
                 value = namestate.value, onValueChange = {
 
@@ -131,33 +131,34 @@ fun SignupScreen(navcontroller:NavController,vm:LCViewModel) {
                 modifier = Modifier.padding(10.dp)
             )
 
-        Button(
-            onClick = { vm.Signup(
-                namestate.value.text,
-                Numbernamestate.value.text,
-               emailnamestate.value.text,
-                passnamestate.value.text,
-            )},
-            modifier = Modifier.padding(5.dp),
+            Button(
+                onClick = {
+                    vm.Signup(
+                        name = namestate.value.text,
+                       number =  Numbernamestate.value.text,
+                       email =  emailnamestate.value.text,
+                      passward =  passnamestate.value.text,
+                    )
+                },
+                modifier = Modifier.padding(5.dp),
 
-        ) {
-            Text(text = "Sign Up")
+                ) {
+                Text(text = "Sign Up")
 
 
+            }
+            Text(text = "Already  a User ? Go to Login--->",
+                color = Color.LightGray,
+                modifier = Modifier
+                    .padding(30.dp)
+                    .clickable {
+                        navigateto(navcontroller, DestinationScreen.Login.route)
+                    }
+            )
         }
-         Text(text = "Already  a User ? Go to Login--->",
-         color = Color.LightGray,
-             modifier = Modifier
-                 .padding(30.dp)
-                 .clickable {
-                     navigateto(navcontroller, DestinationScreen.Login.route)
-                 }
+    }
 
-         )
+    if (vm.inprocess.value) {
+        CommonProgress()
     }
 }
-
-    if(vm.inprocess.value){
-CommonProgress()
-    }
-    }
