@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.letschat.CheckSignedIn
-import com.example.letschat.CommonProgress
+import com.example.letschat.CommonProgressBar
 import com.example.letschat.DestinationScreen
 import com.example.letschat.LCViewModel
 import com.example.letschat.R
@@ -127,7 +127,7 @@ fun LoginScreen(navcontroller: NavController, vm:LCViewModel) {
     }
 
     if (vm.inprocess.value) {
-        CommonProgress()
+        CommonProgressBar()
     }
 
 }

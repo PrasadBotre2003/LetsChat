@@ -13,10 +13,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.letschat.Screens.ChatListScreen
 import com.example.letschat.Screens.ChatScreen
 
 import com.example.letschat.Screens.LoginScreen
+import com.example.letschat.Screens.ProfileScreen
 import com.example.letschat.Screens.SignupScreen
+import com.example.letschat.Screens.StatusScreen
 import com.example.letschat.ui.theme.LetschatTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -62,15 +65,23 @@ fun ChatAppnavigation() {
             SignupScreen(navController, vm = vm)
         }
 
-          composable(DestinationScreen.Login.route) {
-            LoginScreen(navController,vm)
-          }
-        composable(DestinationScreen.Chatlist.route) {
-            ChatScreen()
+        composable(DestinationScreen.Login.route) {
+            LoginScreen(navController, vm)
         }
+        composable(DestinationScreen.Chatlist.route) {
+           ChatListScreen(navController, vm )
         }
 
+
+        composable(DestinationScreen.Statuslist.route) {
+            StatusScreen(navController, vm )
+        }
+        composable(DestinationScreen.Profile.route) {
+           ProfileScreen(navController, vm )
+        }
     }
+
+}
 
 
 

@@ -1,31 +1,27 @@
 package com.example.letschat
 
 
+import android.net.Uri
 import android.util.Log
-import android.widget.Toast
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import com.example.letschat.data.Event
 import com.example.letschat.data.USER_NODE
 import com.example.letschat.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.snapshots
 import com.google.firebase.firestore.toObject
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.lang.Exception
-import java.text.MessageFormat
+import java.util.UUID
 import javax.inject.Inject
-import kotlin.math.log
 
 @HiltViewModel
 class LCViewModel @Inject constructor(
 
     val auth :FirebaseAuth,
-    val  db : FirebaseFirestore
+    val  db : FirebaseFirestore,
+    val storage : FirebaseStorage
 ) :ViewModel() {
 
     var inprocess = mutableStateOf(false)
@@ -100,6 +96,32 @@ val currentUser = auth.currentUser
         }
     }
 
+
+  fun uploadProfileImage(uri:Uri){
+        uploadimage(uri){
+CreateOrUpdateProfile(imageurl = it.toString())
+
+        }
+
+    }
+    fun uploadimage(uri:Uri,onSuccess:(Uri)->Unit){
+inprocess.value= true
+
+        val storageRef = storage.reference
+        val uuid = UUID.randomUUID()
+        val imageRef =  storageRef.child("image$uuid")
+        val uploadTask = imageRef.putFile(uri)
+
+        uploadTask.addOnSuccessListener {
+            val result = it.metadata?.reference?.downloadUrl
+
+            result?.addOnSuccessListener(onSuccess)
+            inprocess.value = false
+        }
+            .addOnFailureListener{
+                handelexception(it,"process fail")
+            }
+    }
    fun CreateOrUpdateProfile(name:String ?= null,number:String ?= null,imageurl: String?=null){
   var uid = auth.currentUser?.uid
        val userdata  = UserData(
