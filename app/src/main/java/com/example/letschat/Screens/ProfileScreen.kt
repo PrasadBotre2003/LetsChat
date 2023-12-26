@@ -23,7 +23,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,8 +36,9 @@ import androidx.navigation.NavController
 import com.example.letschat.CommonDivider
 import com.example.letschat.CommonImage
 import com.example.letschat.CommonProgressBar
+import com.example.letschat.DestinationScreen
 import com.example.letschat.LCViewModel
-
+import com.example.letschat.navigateto
 
 
 @Composable
@@ -45,8 +49,15 @@ val inprogress = vm.inprocess.value
     if(inprogress){
        CommonProgressBar()
     }
-    else{
-     val userData = vm.userData.value
+    else {
+        val userData = vm.userData.value
+        var name by rememberSaveable {
+            mutableStateOf(userData?.name ?: "")
+        }
+        var number by rememberSaveable {
+            mutableStateOf(userData?.number ?: "")
+        }
+
 
 
 
@@ -56,39 +67,46 @@ val inprogress = vm.inprocess.value
             ProfileContent(modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
-                .padding(10.dp),
+                .padding(8.dp),
                 vm = vm,
-                name = "",
-                number = "",
-                oNnamechange = {},
-                oNnumberchange = {},
-                onSave = {},
-                onBack = {},
-                onLogout = {}
+                name = name,
+                number = number,
+                onNamechange = {name=it},
+                onNumberchange = {number=it},
+                onSave = {
+                         vm.CreateOrUpdateProfile(name = name, number = number)
+                },
+                onBack = {
+                         navigateto(navcontroller, route = DestinationScreen.Chatlist.route)
+                },
+                onLogout = {
+                    vm.logout()
+                    navigateto(navcontroller, route = DestinationScreen.Login.route)
+                }
                 )
-
-            BottomNavigationMenu(selectedItem = BottomNavigationMenu.PROFILE,
-              navController = navcontroller)
+            BottomNavigationMenu(selectedItem = BottomNavigationMenu.PROFILE, navController = navcontroller)
         }
 
     }
 
 
+}
 
 
 
-    }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileContent(vm:LCViewModel,
+fun ProfileContent( modifier: Modifier,
+    vm:LCViewModel,
                    name:String,
                    number: String,
-                   oNnamechange:(String)->Unit,
-                   oNnumberchange:(String)->Unit,
+                    onNamechange:(String)->Unit,
+                  onNumberchange:(String)->Unit,
+
                     onBack :()->Unit,
                    onSave :()->Unit,
                    onLogout:()->Unit,
-                   modifier: Modifier){
+                  ){
     Column {
         val imageUrl = vm.userData.value?.imageUrl
         Row(
@@ -104,7 +122,7 @@ fun ProfileContent(vm:LCViewModel,
 
         }
         CommonDivider()
-            ProfileImage(imageUrl = imageUrl,vm = vm)
+            ProfileImage(imageUrl = imageUrl,vm = vm )
          CommonDivider()
         }
 
@@ -113,7 +131,7 @@ fun ProfileContent(vm:LCViewModel,
                 .padding(5.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "name", modifier = Modifier.width(100.dp))
-                TextField(value = name, onValueChange = oNnamechange,
+                TextField(value = name, onValueChange = onNamechange,
                     colors = TextFieldDefaults.colors(
                         focusedTextColor = Color.Black,
                         focusedContainerColor = Color.Transparent,
@@ -131,7 +149,7 @@ fun ProfileContent(vm:LCViewModel,
                 .padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "number", modifier = Modifier.width(100.dp))
-                TextField(value = number, onValueChange = oNnumberchange,
+                TextField(value = number, onValueChange = onNumberchange,
                     colors = TextFieldDefaults.colors(
                         focusedTextColor = Color.Black,
                         focusedContainerColor = Color.Transparent,
@@ -145,30 +163,31 @@ fun ProfileContent(vm:LCViewModel,
      CommonDivider()
             Row (modifier = Modifier
                 .fillMaxWidth()
-                .padding(6.dp),
+                .padding(16.dp),
                 horizontalArrangement = Arrangement.Center){
                 Text(text = "Logout", modifier = Modifier.clickable { onLogout.invoke() })
 
             }
 
         }
-   // }
-///}
+
 
 
 @Composable
 fun ProfileImage(imageUrl : String?,vm : LCViewModel){
 
     val launcher = rememberLauncherForActivityResult(contract =
-    ActivityResultContracts.GetContent()) {
-        uri->
+    ActivityResultContracts.GetContent())
+    {
+        uri ->
         uri?.let {
             vm.uploadProfileImage(uri)
         }
     }
 
 
-Box(modifier = Modifier.height(intrinsicSize = IntrinsicSize.Min)){
+Box(modifier = Modifier.height(intrinsicSize =
+ IntrinsicSize.Min)){
 
         Column(modifier = Modifier
             .padding(10.dp)

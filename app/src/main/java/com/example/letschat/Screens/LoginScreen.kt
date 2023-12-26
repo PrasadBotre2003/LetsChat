@@ -105,7 +105,7 @@ fun LoginScreen(navcontroller: NavController, vm:LCViewModel) {
 
             Button(
                 onClick = {
-                   // navigateto(navcontroller, DestinationScreen.Chatlist.route)
+                   navigateto(navcontroller, DestinationScreen.Chatlist.route)
                           vm.logIn(emailnamestate.value.text,passnamestate.value.text )
                 },
                 modifier = Modifier.padding(5.dp),

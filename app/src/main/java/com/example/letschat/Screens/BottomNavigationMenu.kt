@@ -43,7 +43,7 @@ fun BottomNavigationMenu(
         .background(color = Color.White)) {
 for (item in BottomNavigationMenu.values()){
     Image(painter = painterResource(id = item.icon), contentDescription = null,
-modifier = Modifier.size(40.dp).padding(3.dp).weight(1f).clickable {
+modifier = Modifier.size(30.dp).padding(3.dp).weight(1f).clickable {
     navigateto(navController,item.navDestination.route)
 },
         colorFilter = if (item == selectedItem)

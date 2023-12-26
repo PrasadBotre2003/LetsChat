@@ -19,6 +19,7 @@ import com.example.letschat.Screens.ChatScreen
 import com.example.letschat.Screens.LoginScreen
 import com.example.letschat.Screens.ProfileScreen
 import com.example.letschat.Screens.SignupScreen
+import com.example.letschat.Screens.SingelChatScreen
 import com.example.letschat.Screens.StatusScreen
 import com.example.letschat.ui.theme.LetschatTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,6 +71,13 @@ fun ChatAppnavigation() {
         }
         composable(DestinationScreen.Chatlist.route) {
            ChatListScreen(navController, vm )
+        }
+        composable(DestinationScreen.SingelChat.route) {
+            val  chatId = it.arguments?.getString("chatId")
+            chatId?.let {
+
+            SingelChatScreen(navController,vm,chatId)
+            }
         }
 
 
